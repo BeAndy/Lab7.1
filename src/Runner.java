@@ -13,7 +13,12 @@ public class Runner {
 
     public static void main(String[] args) {
         List<String> listOfWords = getListWords(getListStrings("input.txt"));
-        getNumbersAndWords(listOfWords);
+        List<String> words=getWords(listOfWords);
+        List<String> numbers=getNumbers(listOfWords);
+        Collections.sort(numbers, (first, second) -> (Double.parseDouble(first) > Double.parseDouble(second) ? 1 : 0));
+        Collections.sort(words, (first, second) -> (first.compareToIgnoreCase(second)));
+        writeData("output2.txt",words.iterator());
+        writeData("output1.txt",numbers.iterator());
     }
 
     public static List<String> getListStrings(String way) {
@@ -44,25 +49,28 @@ public class Runner {
         return words;
     }
 
-    public static void getNumbersAndWords(List<String> words) {
-        List<String> names = new LinkedList<>();
+    public static List<String> getNumbers(List<String> words) {
         List<String> numbers = new LinkedList<>();
         Pattern patternFirstTask = Pattern.compile("\\d+");
-        Pattern patternSecondTask = Pattern.compile("[^\\d\\s,.;]+");
         for (String currentWord : words) {
             if (patternFirstTask.matcher(currentWord).matches()) {
                 numbers.add(currentWord);
             }
+        }
+        System.out.println("Number of elements in the first task: " + numbers.size());
+        return numbers;
+
+    }
+    public static List<String> getWords(List<String> words) {
+        List<String> names = new LinkedList<>();
+        Pattern patternSecondTask = Pattern.compile("[^\\d\\s,.;]+");
+        for (String currentWord : words) {
             if (patternSecondTask.matcher(currentWord).matches()) {
                 names.add(currentWord);
             }
         }
-        Collections.sort(names, (first, second) -> (first.compareToIgnoreCase(second)));
-        Collections.sort(numbers, (first, second) -> (Double.parseDouble(first) > Double.parseDouble(second) ? 1 : 0));
-        System.out.println("Number of elements in the first task: " + numbers.size());
         System.out.println("Number of elements in the second task: " + names.size());
-        writeData("output1.txt", numbers.iterator());
-        writeData("output2.txt", names.iterator());
+        return names;
 
     }
 
